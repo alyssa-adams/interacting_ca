@@ -1,0 +1,19 @@
+There are two interacting cellular automata (CA).
+
+Both CA use ECA rules.
+Can run all possible ECA with the RegularCA class.
+This runs all possible initial rules and states for a single ECA.
+
+The InteractingCA class that each of the two interacting CA will change their update rule after each timestep.
+The rule that changes the update rule is called the interaction rule.
+There are four types of interaction rule function that depends on different inputs of current states:
+1. states of both ca
+2. state of the first ca
+3. state of the second ca
+4. a random choice from the above three
+
+Each of these rules types is exhaustively explored over all possible initial conditions.
+Interaction rules are generated as random mappings between states and rules.
+Both CA use the same rule type at once, but not the same mapping.
+
+The state trajectories (always including the initial state) are run for 2(2^w)+1 timesteps.
