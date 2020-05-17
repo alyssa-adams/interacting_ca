@@ -78,7 +78,7 @@ class RegularCA:
                     states = []
                     state_now = i
 
-                    for t in range(2 ** w + 1):
+                    for t in range(2 * (2 ** w + 1) - 1):
                         # save old state
                         states.append(state_now)
 
@@ -170,7 +170,8 @@ class InteractingCA:
             ca2_state0s = regularCA.make_state0s(ca2_w)
 
         # for mixed, mix up the rules here
-        interaction_rule = {**random.choice(interaction_rule_1)[0], **interaction_rule_2[0]}
+        if rule_type == 'mixed':
+            interaction_rule = {**random.choice(interaction_rule_1)[0], **interaction_rule_2[0]}
 
         # for each initial state for ca1,
         for i in ca1_state0s:
@@ -251,9 +252,43 @@ class InteractingCA:
         # 6 interaction rules, three high and three low
         for i, rule_pair in enumerate(interaction_rules):
 
-            for ca1_w in range(3, wmax + 1):
+            ca1_w = wmax
+            ca2_w = wmax
 
-                for ca2_w in range(3, wmax + 1):
+            for ca1_r in range(256):
+
+                for ca2_r in range(256):
+
+                    # loop over all possible initial states for both CA
+
+                    if rule_type == 'both_states':
+                        ica_states, ica_rules = interactingCA.run_both_icas(ca1_w, ca2_w, ca1_r, ca2_r,
+                                                                            rule_pair[0],
+                                                                            rule_pair[0], rule_type)
+                    elif rule_type == 'this_state' or rule_type == 'other_state':
+                        ica_states, ica_rules = interactingCA.run_both_icas(ca1_w, ca2_w, ca1_r, ca2_r,
+                                                                            rule_pair[0][0],
+                                                                            rule_pair[1][0], rule_type)
+                    elif rule_type == 'mixed':
+                        # put the rules together so that they randomly choose at each time step
+                        ica_states, ica_rules = interactingCA.run_both_icas(ca1_w, ca2_w, ca1_r, ca2_r,
+                                                                            rule_pair,
+                                                                            r2[i], rule_type)
+
+                    results = {
+                        'ica_states': ica_states,
+                        'ica_rules': ica_rules
+                    }
+
+                    # save resulting dict to pickle file
+                    dir = 'trajectories'
+                    filename = str(i) + '_' + str(ca1_w) + '_' + str(ca2_w) + '_' + str(ca1_r) + '_' + str(ca2_r)
+                    pickle.dump(results, open(os.path.join(dir, rule_type, filename), "wb"))
+                    print(filename)
+
+            '''for ca1_w in range(3, wmax):
+
+                for ca2_w in range(3, wmax):
 
                     for ca1_r in range(256):
 
@@ -284,7 +319,7 @@ class InteractingCA:
                             dir = 'trajectories'
                             filename = str(i)+'_'+str(ca1_w)+'_'+str(ca2_w)+'_'+str(ca1_r)+'_'+str(ca2_r)
                             pickle.dump(results, open(os.path.join(dir, rule_type, filename), "wb"))
-                            print(filename)
+                            print(filename)'''
 
         return None
 
@@ -352,7 +387,7 @@ class InteractingCA:
 if __name__ == "__main__":
 
     # TODO: Eventually, make this bigger and run more experiments
-    wmax = 4
+    wmax = 3
 
     # ============ ECA trajectories ==============
 
@@ -373,10 +408,11 @@ if __name__ == "__main__":
 
     # save results to dict
     rule_types = ['both_states', 'this_state', 'other_state', 'mixed']
+    rule_types = ['mixed']
 
     # this make the interaction rules, comment this out for running CAs
-    interactingCA.pick_interaction_rules(wmax)
+    #interactingCA.pick_interaction_rules(wmax)
 
     # comment this out when making the interaction rules
-    #for rule_type in rule_types:
-    #    interactingCA.run_all_icas(wmax, rule_type)
+    for rule_type in rule_types:
+        interactingCA.run_all_icas(wmax, rule_type)
