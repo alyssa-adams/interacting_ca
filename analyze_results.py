@@ -80,7 +80,7 @@ for rule_type in rule_types:
                 # is it oee: Is tr > tp and is it innovative?
                 # is state trajectory in ecas?
                 ca1_inn = ca1_state_traj in eca_trajectories
-                ca2_inn = ca1_state_traj in eca_trajectories
+                ca2_inn = ca2_state_traj in eca_trajectories
 
                 # Does s+r of CA occur more than once?
                 # get state-rule pairs for each ca, see when there's a repeat

@@ -252,41 +252,7 @@ class InteractingCA:
         # 6 interaction rules, three high and three low
         for i, rule_pair in enumerate(interaction_rules):
 
-            ca1_w = wmax
-            ca2_w = wmax
-
-            for ca1_r in range(256):
-
-                for ca2_r in range(256):
-
-                    # loop over all possible initial states for both CA
-
-                    if rule_type == 'both_states':
-                        ica_states, ica_rules = interactingCA.run_both_icas(ca1_w, ca2_w, ca1_r, ca2_r,
-                                                                            rule_pair[0],
-                                                                            rule_pair[0], rule_type)
-                    elif rule_type == 'this_state' or rule_type == 'other_state':
-                        ica_states, ica_rules = interactingCA.run_both_icas(ca1_w, ca2_w, ca1_r, ca2_r,
-                                                                            rule_pair[0][0],
-                                                                            rule_pair[1][0], rule_type)
-                    elif rule_type == 'mixed':
-                        # put the rules together so that they randomly choose at each time step
-                        ica_states, ica_rules = interactingCA.run_both_icas(ca1_w, ca2_w, ca1_r, ca2_r,
-                                                                            rule_pair,
-                                                                            r2[i], rule_type)
-
-                    results = {
-                        'ica_states': ica_states,
-                        'ica_rules': ica_rules
-                    }
-
-                    # save resulting dict to pickle file
-                    dir = 'trajectories'
-                    filename = str(i) + '_' + str(ca1_w) + '_' + str(ca2_w) + '_' + str(ca1_r) + '_' + str(ca2_r)
-                    pickle.dump(results, open(os.path.join(dir, rule_type, filename), "wb"))
-                    print(filename)
-
-            '''for ca1_w in range(3, wmax):
+            for ca1_w in range(3, wmax):
 
                 for ca2_w in range(3, wmax):
 
@@ -319,7 +285,7 @@ class InteractingCA:
                             dir = 'trajectories'
                             filename = str(i)+'_'+str(ca1_w)+'_'+str(ca2_w)+'_'+str(ca1_r)+'_'+str(ca2_r)
                             pickle.dump(results, open(os.path.join(dir, rule_type, filename), "wb"))
-                            print(filename)'''
+                            print(filename)
 
         return None
 
